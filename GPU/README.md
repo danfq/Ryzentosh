@@ -42,7 +42,7 @@ Using [GPU-Z](https://www.techpowerup.com/download/techpowerup-gpu-z/), check th
 
 It should look like this:
 
-![alt text](https://github.com/danfq/Ryzentosh-Sonoma/blob/main/GPU%20Preparations/success.png?raw=true)
+![alt text](https://github.com/danfq/Ryzentosh/blob/main/GPU%20Preparations/success.png?raw=true)
 
 
 You're done!
