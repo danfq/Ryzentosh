@@ -18,3 +18,5 @@ Since that's not possible, running a secure version of `macOS`, you can't go dow
 To make `Continuity` work as expected, you'll need to run the provided `Continuity Activation Tool`.
 
 After doing so, `Continuity` should work as expected!
+
+Another fix is to apply the `OCLP` Patches **before** enabling `Secure Boot`, `SIP` and `AMFI`.
