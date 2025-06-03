@@ -7,7 +7,7 @@ Before running any of these scripts, make sure you give them Execution Permissio
 
 ### MKL - Math Kernel Library
 
-Many Applications - such as [Discord](https://discord.com) a feature called `MKL - Math Kernel Library`, which is built for `Intel`.
+Many Applications - such as [Discord](https://discord.com) use a feature called `MKL - Math Kernel Library`, which is built for `Intel`.
 
 As expected, this feature isn't available on AMD Systems. As a workaround, we can fool macOS into thinking we're running on an Intel CPU.<br>
 To do this, run the `fix_mkl.sh` script.
