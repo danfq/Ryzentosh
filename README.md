@@ -1,4 +1,4 @@
-# Ryzentosh (OC 1.0.2)
+# Ryzentosh (OC 1.0.4)
 
 ![alt text](https://github.com/danfq/Ryzentosh/blob/main/Screenshots/about.png?raw=true)
 ![alt text](https://github.com/danfq/Ryzentosh/blob/main/Screenshots/fastfetch.png?raw=true)
