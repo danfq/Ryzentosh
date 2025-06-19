@@ -102,3 +102,247 @@ The output of the above command will give you some insight into what's causing I
 | [GPRW](https://github.com/dortania/OpenCore-Post-Install/raw/refs/heads/master/extra-files/SSDT-GPRW.aml) | Use this if you have `Method GPRW, 2` in your ACPI |
 | [UPRW](https://github.com/dortania/OpenCore-Post-Install/raw/refs/heads/master/extra-files/SSDT-UPRW.aml) | Use this if you have `Method UPRW, 2` in your ACPI |
 | [LANC](https://github.com/dortania/OpenCore-Post-Install/raw/refs/heads/master/extra-files/SSDT-LANC.aml) | Use this if you have `Device (LANC)` in your ACPI |
+
+## Extra GPU
+
+If you're using the same System as me, or a similar one, chances are that you have an unsupported - and very stubborn - GPU, hanging around.<br>
+macOS will still "see" it, and attempt to load Drivers for it.
+
+Since the GPU isn't supported, this means you'll always have an Assertion:<br>
+`Idle sleep preventers: IODisplayWrangler`
+
+This Assertion will **always** prevent proper Sleep.
+
+### The Fix
+
+My current fix may be messy, and I may change it in the future - if I find a better way to do this.
+
+But, in short, I needed a few patches.
+One `SSDT`, a few `DeviceProperties` entries, and an `ACPI` Patch.
+
+The `SSDT` is available in this folder, and the other patches are below:
+
+#### SSDT-DGPU
+
+This SSDT is a joint effort by me, [T3 Chat](https://t3.chat), and the legendary [Edhawk](https://forum.amd-osx.com/members/edhawk.105/).
+It references the PCI bridge (`BRG0`) and disables **all levels** of the PCI path by overriding their `_STA` methods to return `Zero`:
+
+- `GPP8` - The PCI bus.
+- `X161` - The PCI slot.
+- `BRG0` - The PCI bridge.
+- `GFX1` -The GPU itself.
+
+
+This effectively tells macOS that the **entire device chain** is not present, making the GPU *invisible* to the OS.
+It is noteworthy that this SSDT **does not** power down the GPU - it simply *prevents* macOS from loading Drivers for it.
+
+#### DeviceProperties
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>DeviceProperties</key>
+    <dict>
+        <key>Add</key>
+        <dict>
+            <key>PciRoot(0x0)/Pci(0x3,0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)/Pci(0x0,0x0)</key>
+            <dict>
+                <key>device-id</key>
+                <data>AAAAAA==</data>
+                <key>vendor-id</key>
+                <data>AAAAAA==</data>
+                <key>subsystem-id</key>
+                <data>AAAAAA==</data>
+                <key>subsystem-vendor-id</key>
+                <data>AAAAAA==</data>
+                <key>class-code</key>
+                <data>AAA=</data>
+                <key>compatible</key>
+                <string>pci0000,0000</string>
+                <key>model</key>
+                <string>NotAGPU</string>
+                <key>name</key>
+                <string>NotAGPU</string>
+                <key>IOName</key>
+                <string>NotAGPU</string>
+                <key>IOPCIMatch</key>
+                <data>AAAAAA==</data>
+                <key>IONameMatch</key>
+                <string>NotAGPU</string>
+                <key>IOProviderClass</key>
+                <string>IOPCIDevice</string>
+                <key>hda-gfx</key>
+                <string></string>
+                <key>AAPL,slot-name</key>
+                <string>NotAGPU</string>
+                <key>built-in</key>
+                <data>AA==</data>
+            </dict>
+            <key>PciRoot(0x0)/Pci(0x3,0x1)/Pci(0x0,0x0)/Pci(0x0,0x0)</key>
+            <dict>
+                <key>device-id</key>
+                <data>AAAAAA==</data>
+                <key>vendor-id</key>
+                <data>AAAAAA==</data>
+                <key>subsystem-id</key>
+                <data>AAAAAA==</data>
+                <key>subsystem-vendor-id</key>
+                <data>AAAAAA==</data>
+                <key>class-code</key>
+                <data>AAA=</data>
+                <key>compatible</key>
+                <string>pci0000,0000</string>
+                <key>model</key>
+                <string>NotAGPU</string>
+                <key>name</key>
+                <string>NotAGPU</string>
+                <key>IOName</key>
+                <string>NotAGPU</string>
+                <key>IOPCIMatch</key>
+                <data>AAAAAA==</data>
+                <key>IONameMatch</key>
+                <string>NotAGPU</string>
+                <key>IOProviderClass</key>
+                <string>IOPCIDevice</string>
+                <key>hda-gfx</key>
+                <string></string>
+                <key>AAPL,slot-name</key>
+                <string>NotAGPU</string>
+                <key>built-in</key>
+                <data>AA==</data>
+            </dict>
+            <key>PciRoot(0x0)/Pci(0x3,0x1)/Pci(0x0,0x0)</key>
+            <dict>
+                <key>device-id</key>
+                <data>AAAAAA==</data>
+                <key>vendor-id</key>
+                <data>AAAAAA==</data>
+                <key>subsystem-id</key>
+                <data>AAAAAA==</data>
+                <key>subsystem-vendor-id</key>
+                <data>AAAAAA==</data>
+                <key>class-code</key>
+                <data>AAA=</data>
+                <key>compatible</key>
+                <string>pci0000,0000</string>
+                <key>model</key>
+                <string>NotAGPU</string>
+                <key>name</key>
+                <string>NotAGPU</string>
+                <key>IOName</key>
+                <string>NotAGPU</string>
+                <key>IOPCIMatch</key>
+                <data>AAAAAA==</data>
+                <key>IONameMatch</key>
+                <string>NotAGPU</string>
+                <key>IOProviderClass</key>
+                <string>IOPCIDevice</string>
+                <key>hda-gfx</key>
+                <string></string>
+                <key>AAPL,slot-name</key>
+                <string>NotAGPU</string>
+                <key>built-in</key>
+                <data>AA==</data>
+            </dict>
+            <key>PciRoot(0x0)/Pci(0x3,0x1)</key>
+            <dict>
+                <key>device-id</key>
+                <data>AAAAAA==</data>
+                <key>vendor-id</key>
+                <data>AAAAAA==</data>
+                <key>subsystem-id</key>
+                <data>AAAAAA==</data>
+                <key>subsystem-vendor-id</key>
+                <data>AAAAAA==</data>
+                <key>class-code</key>
+                <data>AAA=</data>
+                <key>compatible</key>
+                <string>pci0000,0000</string>
+                <key>model</key>
+                <string>NotAGPU</string>
+                <key>name</key>
+                <string>NotAGPU</string>
+                <key>IOName</key>
+                <string>NotAGPU</string>
+                <key>IOPCIMatch</key>
+                <data>AAAAAA==</data>
+                <key>IONameMatch</key>
+                <string>NotAGPU</string>
+                <key>IOProviderClass</key>
+                <string>IOPCIDevice</string>
+                <key>hda-gfx</key>
+                <string></string>
+                <key>AAPL,slot-name</key>
+                <string>NotAGPU</string>
+                <key>built-in</key>
+                <data>AA==</data>
+            </dict>
+            <key>PciRoot(0x0)/Pci(0x8,0x1)/Pci(0x0,0x4)</key>
+            <dict>
+                <key>name</key>
+                <string>HDEF</string>
+                <key>compatible</key>
+                <string>pci1022,1487</string>
+                <key>device-id</key>
+                <data>hxQAAA==</data>
+                <key>hda-gfx</key>
+                <string>onboard-1</string>
+                <key>built-in</key>
+                <data>AQ==</data>
+                <key>layout-id</key>
+                <data>CwAAAA==</data>
+                <key>alc-layout-id</key>
+                <data>CwAAAA==</data>
+            </dict>
+        </dict>
+        <key>Delete</key>
+        <dict/>
+    </dict>
+</dict>
+</plist>
+```
+
+The first four entries spoof core values of the GPU, effectively making macOS think there's no GPU at any of the included PCI Paths.
+
+The last entry, for `PciRoot(0x0)/Pci(0x8,0x1)/Pci(0x0,0x4)`, defines core values for the on-board Audio Controller, such as `hda-gfx` and `layout-id`.
+For good measure, I also included `alc-layout-id`, but this is supposedly **not needed** (automatically handled by `AppleALC`).
+
+#### ACPI
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+    <dict>
+        <key>Comment</key>
+        <string>Rename HD Audio AZAL to HDEF</string>
+        <key>Enabled</key>
+        <true/>
+        <key>Find</key>
+        <data>QVpBTA==</data>
+        <key>Limit</key>
+        <integer>0</integer>
+        <key>Mask</key>
+        <data></data>
+        <key>OemTableId</key>
+        <data></data>
+        <key>Replace</key>
+        <data>SERFRg==</data>
+        <key>ReplaceMask</key>
+        <data></data>
+        <key>Skip</key>
+        <integer>0</integer>
+        <key>TableLength</key>
+        <integer>0</integer>
+        <key>TableSignature</key>
+        <data></data>
+    </dict>
+</array>
+</plist>
+```
+
+This patch is pretty self-explanatory:
+It renames the on-board `AZAL` device to `HDEF`, which is the name that `AppleALC` expects, to inject the proper Layout ID and Audio Features.
