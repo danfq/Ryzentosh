@@ -29,3 +29,5 @@ I've tested all `iServices` and ran benchmarks - no issues to report.
 
 If you're running into issues, check out my Guides; they're included in this Repo.
 Check `AMD Patches`, `Sleep` & `Virtualization` to fix their respective issues.
+
+**Disclaimer:** This repository is no longer maintained as the author has moved to Linux.
