@@ -1,3 +1,5 @@
+> **Disclaimer:** This repository is no longer maintained as I have moved to Linux.
+
 # Ryzentosh (OC 1.0.6)
 
 ![System Information](https://github.com/danfq/Ryzentosh/blob/main/Screenshots/info.png?raw=true)
@@ -29,5 +31,3 @@ I've tested all `iServices` and ran benchmarks - no issues to report.
 
 If you're running into issues, check out my Guides; they're included in this Repo.
 Check `AMD Patches`, `Sleep` & `Virtualization` to fix their respective issues.
-
-**Disclaimer:** This repository is no longer maintained as the author has moved to Linux.
